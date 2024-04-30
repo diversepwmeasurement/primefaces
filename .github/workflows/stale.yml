@@ -1,22 +1,26 @@
-name: Stale Issues
-on:
-  schedule:
-    - cron: "0 1 * * *"
-permissions:
-  contents: read
-
 jobs:
   stale:
     permissions:
-      issues: write  # for actions/stale to close stale issues
-      pull-requests: write  # for actions/stale to close stale PRs
-    runs-on: ubuntu-latest
+      issues: write
+      pull-requests: write
+    runs-on: self-hosted
     steps:
-      - uses: actions/stale@v9
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          stale-issue-message: 'This issue is marked as stale because there was no activity on it for the last 2 years. Remove stale label or comment or this will be closed in 30 days'
-          stale-pr-message: 'This PR is marked as stale because there was no activity on it for the last 2 years. Remove stale label or comment or this will be closed in 30 days'
-          exempt-issue-labels: 'new feature,enhancement,theme'
-          days-before-stale: 730
-          days-before-close: 30
+    - continue-on-error: true
+      uses: actions/stale@v9
+      with:
+        days-before-close: 30
+        days-before-stale: 730
+        exempt-issue-labels: new feature,enhancement,theme
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        stale-issue-message: This issue is marked as stale because there was no activity
+          on it for the last 2 years. Remove stale label or comment or this will be
+          closed in 30 days
+        stale-pr-message: This PR is marked as stale because there was no activity
+          on it for the last 2 years. Remove stale label or comment or this will be
+          closed in 30 days
+name: Stale Issues
+on:
+  repository_dispatch:
+    types: trigger-ga___stale.yml
+permissions:
+  contents: read

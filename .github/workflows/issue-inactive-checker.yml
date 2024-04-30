@@ -1,28 +1,27 @@
-name: Issue Inactive Checker
-
-on:
-  schedule:
-    - cron: "0 13 * * *" # Every Monday at 1PM UTC (9AM EST)
-
-permissions:
-  contents: read
-
 jobs:
   issue-close-require:
     permissions:
       issues: write
       pull-requests: write
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
-      - name: Cannot Replicate
-        uses: actions-cool/issues-helper@v3
-        with:
-          actions: "close-issues"
-          labels: "Resolution: Cannot Replicate"
-          inactive-day: 20
-      - name: Needs Reproducer
-        uses: actions-cool/issues-helper@v3
-        with:
-          actions: "close-issues"
-          labels: "Status: Needs Reproducer"
-          inactive-day: 20
+    - continue-on-error: true
+      name: Cannot Replicate
+      uses: actions-cool/issues-helper@v3
+      with:
+        actions: close-issues
+        inactive-day: 20
+        labels: 'Resolution: Cannot Replicate'
+    - continue-on-error: true
+      name: Needs Reproducer
+      uses: actions-cool/issues-helper@v3
+      with:
+        actions: close-issues
+        inactive-day: 20
+        labels: 'Status: Needs Reproducer'
+name: Issue Inactive Checker
+on:
+  repository_dispatch:
+    types: trigger-ga___issue-inactive-checker.yml
+permissions:
+  contents: read
